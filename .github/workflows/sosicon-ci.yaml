@@ -23,7 +23,7 @@ jobs:
       - name: Current date as tag
         id: today
         shell: bash
-        run: echo "##[set-output name=today;]$(date -I)"
+        run: echo "::set-output name=today::$(date -I)"
 
   main:
     runs-on: ubuntu-latest
