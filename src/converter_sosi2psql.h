@@ -54,26 +54,14 @@ namespace sosicon {
         class Field {
             std::string::size_type mMaxLength;
             std::string::size_type mMinLength;
-            bool mIsNumeric;
         public:
-            bool isNumeric() {
-                if( mMaxLength == mMinLength ) {
-                    // Treat fixed-length numerical data as character field, since they
-                    // are in fact non-arithmetic types types like dates, phone numbers
-                    // or serial numbers.
-                    mIsNumeric = false;
-                }
-                return mIsNumeric;
-            }
             std::string::size_type length() {
                 return mMaxLength;
             }
             Field() {
-                mIsNumeric = true;
                 mMaxLength = 0;
             }
             Field( std::string& str ) {
-                mIsNumeric = true;
                 mMaxLength = 0;
                 mMinLength = std::numeric_limits<std::string::size_type>::max();
                 expand( str );
@@ -82,9 +70,6 @@ namespace sosicon {
                 std::string::size_type len = str.length();
                 mMinLength = std::min( mMinLength, len );
                 mMaxLength = std::max( mMaxLength, len );
-                if( mIsNumeric ) {
-                    mIsNumeric = utils::isNumeric( str );
-                }
                 return mMaxLength;
             }
         };
@@ -307,7 +292,7 @@ namespace sosicon {
 
         //! Constructor
         ConverterSosi2psql() : mCmd( 0 ) { }
-        
+
         //! Destructor
         virtual ~ConverterSosi2psql() { }
 
@@ -328,7 +313,7 @@ namespace sosicon {
 
     }; // class ConverterSosi2tsv
    /*! @} end group converters */
-    
+
 }; // namespace sosi2tsv
 
 #endif

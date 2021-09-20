@@ -77,19 +77,8 @@ buildCreateStatement( Wkt wktGeom,
         for( itrFields = f->begin(); itrFields != f->end(); itrFields++ ) {
            std::string field = itrFields->first;
            std::string::size_type len = itrFields->second.length();
-           bool isNumeric = itrFields->second.isNumeric();
            if( field != geomField ) {
-               if( isNumeric && len < 10 ) {
-                   ss << ","
-                      << field
-                      << " INTEGER";
-               }
-               else if( isNumeric && len < 19 ) {
-                   ss << ","
-                      << field
-                      << " BIGINT";
-               }
-               else if( len > 255 ) {
+                if( len > 255 ) {
                    ss << ","
                       << field
                       << " TEXT";
@@ -202,13 +191,10 @@ buildInsertStatement( Wkt wktGeom,
                 }
                 std::string val = utils::trim( ( *row )[ key ] );
                 if( val.empty() ) {
-                    sqlValues += itrFields->second.isNumeric() ? "NULL," : "'',";
+                    sqlValues += "'',";
                 }
                 else if( key == geomField ) {
                     sqlValues += val + ",";
-                }
-                else if( itrFields->second.isNumeric() ) {
-                    sqlValues += utils::sqlNormalize( val ) + ",";
                 }
                 else {
                     sqlValues += "'" + utils::sqlNormalize( val ) + "',";
