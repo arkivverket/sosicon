@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
+      today: ${{ steps.today.outputs.today }}
     steps:
       - name: Extract branch name
         id: extract_branch
