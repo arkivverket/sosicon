@@ -27,6 +27,9 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
       FQ_IMAGE: ${{ format('ghcr.io/arkivverket/sosicon:{0}-{1}', needs.pre_job.outputs.branch, github.sha) }}
+      ACR: ${{ format('arkivverket.azurecr.io/da-ssrsak-visning') }}
+      IMAGE: ${{ github.event.repository.name }}
+      TAG: latest
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Login to GitHub Package Registry
@@ -50,3 +53,13 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+      - name: Tag to ACR
+        run: docker tag ${{ env.FQ_IMAGE }} ${ACR}/${IMAGE}:${TAG}
+      - name: Login to ACR
+        uses: Azure/docker-login@v1
+        with:
+          username: ${{ secrets.ARKIVVERKET_AZURE_REGISTRY_USERNAME }}
+          password: ${{ secrets.ARKIVVERKET_AZURE_REGISTRY_PASSWORD }}
+          login-server: https://arkivverket.azurecr.io
+      - name: Publish to ACR
+        run: docker push ${ACR}/${IMAGE}:${TAG}
