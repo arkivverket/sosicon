@@ -1,4 +1,4 @@
-FROM amd64/debian:buster-slim
+FROM amd64/debian:buster-slim AS builder
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends build-essential
@@ -11,9 +11,9 @@ RUN pwd && mkdir -p bin/cmd/linux64
 
 RUN make -C src
 
-RUN cp bin/cmd/linux64/sosicon /usr/bin/sosicon
+FROM amd64/debian:buster-slim
 
-RUN rm -rf /sosicon
+COPY --from=builder /sosicon/bin/cmd/linux64/sosicon /usr/bin/sosicon
 
 ENTRYPOINT ["/usr/bin/sosicon"]
 
