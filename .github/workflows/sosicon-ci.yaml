@@ -20,6 +20,10 @@ jobs:
         id: extract_branch
         shell: bash
         run: echo "##[set-output name=branch;]$(BRANCH=${GITHUB_REF#refs/heads/}; echo ${BRANCH//\//-})"
+      - name: Current date as tag
+        id: today
+        shell: bash
+        run: echo "##[set-output name=today;]$(date -I)"
 
   main:
     runs-on: ubuntu-latest
@@ -29,7 +33,7 @@ jobs:
       FQ_IMAGE: ${{ format('ghcr.io/arkivverket/sosicon:{0}-{1}', needs.pre_job.outputs.branch, github.sha) }}
       ACR: ${{ format('arkivverket.azurecr.io/da-ssrsak-visning') }}
       IMAGE: ${{ github.event.repository.name }}
-      TAG: latest
+      TAG: ${{ needs.pre_job.outputs.today }}
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Login to GitHub Package Registry
