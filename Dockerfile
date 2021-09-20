@@ -14,3 +14,7 @@ RUN make -C src
 RUN cp bin/cmd/linux64/sosicon /usr/bin/sosicon
 
 RUN rm -rf /sosicon
+
+ENTRYPOINT ["/usr/bin/sosicon"]
+
+CMD ["-help"]
